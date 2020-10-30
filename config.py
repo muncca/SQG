@@ -1,7 +1,7 @@
 config = {
     'general': {
         'http': {
-            'timeout': 120
+            'timeout': 240
         },
         'dbpedia': {
             'endpoint': 'http://dbpedia.org/sparql',
