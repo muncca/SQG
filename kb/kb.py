@@ -3,7 +3,7 @@ from multiprocessing import Pool
 from contextlib import closing
 import json
 import requests
-
+import logging
 
 def query(args):
     endpoint, q, idx = args
@@ -23,6 +23,7 @@ class KB(object):
         self.default_graph_uri = default_graph_uri
         self.type_uri = "type_uri"
         self.server_available = self.check_server()
+        self.logger = logging.getLogger(__name__)
 
     def check_server(self):
         payload = {'query': 'select distinct ?Concept where {[] a ?Concept} LIMIT 1', 'format': 'application/json'}
@@ -39,8 +40,11 @@ class KB(object):
     def query(self, q):
         payload = {'query': q, 'format': 'application/json'}
         try:
-            r = requests.post(self.endpoint, payload)
+            query_string = urllib.parse.urlencode(payload)
+            url = self.endpoint + '?' + query_string
+            r = requests.get(url)
         except:
+            self.logger.error("could not execute sparql query against knowledge base")
             return 0, None
 
         return r.status_code, r.json() if r.status_code == 200 else None
@@ -125,6 +129,7 @@ class KB(object):
         where = where[6:]
         query = u"""{prefix}
 SELECT DISTINCT ?m WHERE {{ {where} }}""".format(prefix=self.query_prefix(), where=where)
+
 
         status, response = self.query(query)
         if status == 200 and len(response["results"]["bindings"]) > 0:
