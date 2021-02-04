@@ -63,7 +63,6 @@ class LC_QaudParser(AnswerParser):
 
 
 if __name__ == "__main__":
-    print "Here We Go !!!"
     ds = LC_Qaud()
     ds.load()
     ds.parse()
