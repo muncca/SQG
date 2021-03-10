@@ -7,7 +7,7 @@ Downloads the following:
 """
 
 from __future__ import print_function
-import urllib2
+from urllib.request import urlopen
 import sys
 import os
 import shutil
@@ -18,7 +18,7 @@ def download(url, dirpath):
     filename = url.split('/')[-1]
     filepath = os.path.join(dirpath, filename)
     try:
-        u = urllib2.urlopen(url)
+        u = urlopen(url)
     except:
         print("URL %s failed to open" %url)
         raise Exception
@@ -28,7 +28,7 @@ def download(url, dirpath):
         print("Cannot write %s" %filepath)
         raise Exception
     try:
-        filesize = int(u.info().getheaders("Content-Length")[0])
+        filesize = int(u.headers['content-length'])
     except:
         print("URL %s failed to report length" %url)
         raise Exception
